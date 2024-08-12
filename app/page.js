@@ -39,6 +39,10 @@ export default function Home() {
         <div className="bg-zinc-300 p-3 text-xl rounded font-bold mb-4 max-w-xs">
           ADHD Calculator
         </div>
+        <h2 className="text-md mb-2 p-3 text-white bg-zinc-700 rounded">
+          Tasks you like get negative score, and tasks you don't get positive
+          score. Try to keep your score at 0 or higher.
+        </h2>
         <div className="flex flex-col max-w-xs mb-6">
           <h1 className="text-lg font-bold mb-2">Add new task</h1>
           <input
@@ -87,16 +91,18 @@ export default function Home() {
       </div>
 
       <div className="w-2/3 border-l pl-4">
-        <h2 className="text-xl font-bold mb-4">Task List</h2>
+        <h2 className="text-xl font-bold mb-1 bg-zinc-300 p-3 rounded">
+          Task List
+        </h2>
         <div className="flex flex-col">
-          <div className="flex justify-between p-2 border-b font-bold">
+          <div className="flex justify-between py-2 border-b font-bold">
             <div className="w-2/3">Task name</div>
             <div className="w-1/3 text-right">Point Value</div>
           </div>
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="flex justify-between items-center p-2 border-b group"
+              className="flex justify-between items-center py-2 border-b group"
             >
               <div className="w-2/3">{task.name}</div>
               <div className="w-1/3 flex justify-end items-center">
@@ -121,7 +127,7 @@ export default function Home() {
               </div>
             </div>
           ))}
-          <div className="flex justify-between p-2 border-b font-bold">
+          <div className="flex justify-between py-2 border-b font-bold">
             <div className="w-2/3">Total Points</div>
             <div className="w-1/3 text-right">{totalPoints}</div>
           </div>
