@@ -40,7 +40,7 @@ export default function Home() {
           ADHD Calculator
         </div>
         <h2 className="text-md mb-2 p-3 text-white bg-zinc-700 rounded max-w-sm">
-          Tasks you like get negative score, and tasks you don't get positive
+          Tasks you like get negative score, and productive tasks get positive
           score. Try to keep your score at 0 or higher.
         </h2>
         <div className="flex flex-col max-w-sm mb-6">
