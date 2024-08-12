@@ -10,7 +10,7 @@ export default function Home() {
     if (newTask.name && newTask.points) {
       setTasks([
         ...tasks,
-        { ...newTask, points: parseInt(newTask.points), id: Date.now() },
+        { ...newTask, points: parseInt(newTask.points, 10), id: Date.now() },
       ]);
       setNewTask({ name: "", points: "" });
     }
@@ -19,7 +19,9 @@ export default function Home() {
   const addPreviousTask = () => {
     if (selectedTask) {
       const taskToAdd = tasks.find((task) => task.name === selectedTask);
-      setTasks([...tasks, { ...taskToAdd, id: Date.now() }]);
+      if (taskToAdd) {
+        setTasks([...tasks, { ...taskToAdd, id: Date.now() }]);
+      }
       setSelectedTask("");
     }
   };
@@ -31,7 +33,7 @@ export default function Home() {
   const totalPoints = tasks.reduce((sum, task) => sum + task.points, 0);
 
   // Get unique task names for the dropdown
-  const uniqueTasks = Array.from(new Set(tasks.map((task) => task.name)));
+  const uniqueTasks = [...new Set(tasks.map((task) => task.name))];
 
   return (
     <main className="flex p-4">
@@ -40,8 +42,8 @@ export default function Home() {
           ADHD Calculator
         </div>
         <h2 className="text-md mb-2 p-3 text-white bg-zinc-700 rounded max-w-sm">
-          Tasks you like get negative score, and productive tasks get positive
-          score. Try to keep your score at 0 or higher.
+          Tasks you like get negative scores, and productive tasks get positive
+          scores. Try to keep your score at 0 or higher.
         </h2>
         <div className="flex flex-col max-w-sm mb-6">
           <h1 className="text-lg font-bold mb-2">Add new task</h1>
@@ -75,8 +77,8 @@ export default function Home() {
             onChange={(e) => setSelectedTask(e.target.value)}
           >
             <option value="">Select a task</option>
-            {uniqueTasks.map((taskName, index) => (
-              <option key={index} value={taskName}>
+            {uniqueTasks.map((taskName) => (
+              <option key={taskName} value={taskName}>
                 {taskName}
               </option>
             ))}
