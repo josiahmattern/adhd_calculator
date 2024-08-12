@@ -1,112 +1,131 @@
-import Image from "next/image";
+"use client";
+import React, { useState } from "react";
 
 export default function Home() {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState({ name: "", points: "" });
+  const [selectedTask, setSelectedTask] = useState("");
+
+  const addTask = () => {
+    if (newTask.name && newTask.points) {
+      setTasks([
+        ...tasks,
+        { ...newTask, points: parseInt(newTask.points), id: Date.now() },
+      ]);
+      setNewTask({ name: "", points: "" });
+    }
+  };
+
+  const addPreviousTask = () => {
+    if (selectedTask) {
+      const taskToAdd = tasks.find((task) => task.name === selectedTask);
+      setTasks([...tasks, { ...taskToAdd, id: Date.now() }]);
+      setSelectedTask("");
+    }
+  };
+
+  const deleteTask = (taskId) => {
+    setTasks(tasks.filter((task) => task.id !== taskId));
+  };
+
+  const totalPoints = tasks.reduce((sum, task) => sum + task.points, 0);
+
+  // Get unique task names for the dropdown
+  const uniqueTasks = Array.from(new Set(tasks.map((task) => task.name)));
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="flex p-4">
+      <div className="w-1/3 pr-4">
+        <div className="bg-zinc-300 p-3 text-xl rounded font-bold mb-4 max-w-xs">
+          ADHD Calculator
+        </div>
+        <div className="flex flex-col max-w-xs mb-6">
+          <h1 className="text-lg font-bold mb-2">Add new task</h1>
+          <input
+            placeholder="Task name"
+            className="px-2 py-1 border border-black rounded mb-2 w-full"
+            type="text"
+            value={newTask.name}
+            onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
+          />
+          <input
+            placeholder="Point Value"
+            className="px-2 py-1 border border-black rounded mb-2 w-full"
+            type="number"
+            value={newTask.points}
+            onChange={(e) => setNewTask({ ...newTask, points: e.target.value })}
+          />
+          <button
+            className="bg-zinc-300 p-2 rounded w-full hover:bg-zinc-400 transition-colors"
+            onClick={addTask}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            Add Task
+          </button>
+        </div>
+
+        <div className="flex flex-col max-w-xs">
+          <h1 className="text-lg font-bold mb-2">Add previous task</h1>
+          <select
+            className="px-2 py-1 border border-black rounded mb-2 w-full"
+            value={selectedTask}
+            onChange={(e) => setSelectedTask(e.target.value)}
+          >
+            <option value="">Select a task</option>
+            {uniqueTasks.map((taskName, index) => (
+              <option key={index} value={taskName}>
+                {taskName}
+              </option>
+            ))}
+          </select>
+          <button
+            className="bg-zinc-300 p-2 rounded w-full hover:bg-zinc-400 transition-colors"
+            onClick={addPreviousTask}
+          >
+            Add Previous Task
+          </button>
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className="w-2/3 border-l pl-4">
+        <h2 className="text-xl font-bold mb-4">Task List</h2>
+        <div className="flex flex-col">
+          <div className="flex justify-between p-2 border-b font-bold">
+            <div className="w-2/3">Task name</div>
+            <div className="w-1/3 text-right">Point Value</div>
+          </div>
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              className="flex justify-between items-center p-2 border-b group"
+            >
+              <div className="w-2/3">{task.name}</div>
+              <div className="w-1/3 flex justify-end items-center">
+                <button
+                  className="text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 mr-2"
+                  onClick={() => deleteTask(task.id)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <span>{task.points}</span>
+              </div>
+            </div>
+          ))}
+          <div className="flex justify-between p-2 border-b font-bold">
+            <div className="w-2/3">Total Points</div>
+            <div className="w-1/3 text-right">{totalPoints}</div>
+          </div>
+        </div>
       </div>
     </main>
   );
